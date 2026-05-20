@@ -1,11 +1,19 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import LoaderSpinner from 'src/shared/components/LoaderSpinner.vue';
 import FilterSelector from 'src/issues/components/filter-selector/FilterSelector.vue';
+import FloatingButtons from '../components/FloatingButtons.vue';
 import IssueList from 'src/issues/components/issue-list/IssueList.vue';
 import useIssues from '../composables/useIssues';
 
 
 const { issuesQuery } = useIssues();
+const isOpen = ref<boolean>(false);
+
+
+const openDialog = () => {
+  isOpen.value = true;
+}
 
 
 </script>
@@ -32,6 +40,15 @@ const { issuesQuery } = useIssues();
 
   </div>
 
+  <!-- FloatingButtons -->
+  <FloatingButtons :buttons="[
+    {
+      icon: 'add',
+      color: 'primary',
+      size: 'lg',
+      action: openDialog,
+    },
+  ]" />
 </template>
 
 
