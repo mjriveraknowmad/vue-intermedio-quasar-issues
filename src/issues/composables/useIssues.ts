@@ -24,7 +24,7 @@ const getIssues = async (labels: string[], state: State): Promise<Issue[]> => {
 };
 
 const useIssues = () => {
-  const { labels, state } = useStore();
+  const { labels, state } = useStore(); // para no depender de una store concreta, sino de un composable que pueda ser reutilizado en diferentes stores. En este caso, el composable useStore es un wrapper para acceder a la store de issues, pero podría ser cualquier otra store que tenga labels y state.
   // const issuesStore = useIssuesStore();
   // const { labels, state } = storeToRefs( issuesStore );
 

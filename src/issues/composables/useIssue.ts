@@ -75,6 +75,8 @@ const useIssue = (issueNumber: number, options?: Options) => {
   };
 
   const setIssueCacheData = (issue: Issue) => {
+    // Actualiza el cache de la query del issue, para que si el usuario navega a la página del issue, no tenga que esperar a que se cargue, sino que ya tenga los datos en cache.
+    // Basicamente es como si ejecutara el issueQuery de más arriba, porque en realidad obtendría el mismo dato, entonces lo guardamos ahí, y cuando pira el issueQuery, como ya tiene el dato en cache, lo muestra directamente, sin tener que esperar a que se cargue.
     queryClient.setQueryData(['issue', issue.number], issue);
   };
 
