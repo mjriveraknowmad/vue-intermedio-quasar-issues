@@ -8,53 +8,42 @@ interface Args {
   body?: string;
 }
 
-const addIssue =  async({ title, body = '', labels = [] }: Args ):Promise<Issue> => {
+const addIssue = async ({
+  title,
+  body = '',
+  labels = [],
+}: Args): Promise<Issue> => {
+  const newIssueData = { title, body, labels };
 
-  const newIssueData ={ title, body, labels };
-
-  const { data } = await githubApi.post<Issue>('/issues', newIssueData );
-  console.log({DataFromGithub: data})
+  const { data } = await githubApi.post<Issue>('/issues', newIssueData);
+  console.log({ DataFromGithub: data });
   return data;
-
-}
-
+};
 
 const useIssueMutation = () => {
+  const queryClient = useQueryClient();
+  // caso de uso: issueMutation.mutate({ title, body, labels })
+  const issueMutation = useMutation(addIssue, {
+    onSuccess: (issue) => {
+      queryClient.invalidateQueries({
+        queryKey: ['issues'],
+        exact: false,
+      });
 
-    const queryClient = useQueryClient();
+      queryClient.refetchQueries(['issues'], {
+        exact: false,
+      });
 
-    const issueMutation = useMutation( addIssue, {
-      onSuccess:( issue ) =>  {
+      queryClient.setQueryData(['issue', issue.number], issue);
+    },
+    onSettled: () => {
+      // Cuando termina con error o successs
+    },
+  });
 
-        queryClient.invalidateQueries({
-          queryKey: ['issues'],
-          exact: false,
-        });
-
-        queryClient.refetchQueries(
-          ['issues'],
-          {
-            exact: false,
-          }
-        );
-
-        queryClient.setQueryData(
-          ['issue', issue.number ],
-          issue
-        );
-
-      },
-      onSettled:() => {
-        // Cuando termina con error o successs
-      }
-    })
-
-
-
-    return {
-      issueMutation
-    }
-}
+  return {
+    issueMutation,
+  };
+};
 
 export default useIssueMutation;
-
